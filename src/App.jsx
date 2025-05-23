@@ -8,10 +8,12 @@ import Dashboard from './pages/Dashboard';
 import MainLayout from './layouts/MainLayout';
 import SecondLayout from './layouts/SecondLayout';
 import Links from './pages/Links';
+import ScrollToTop from './components/ScrollToTop';
 
 const App = () => {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />

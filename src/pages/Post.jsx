@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { FiInfo } from 'react-icons/fi';
 
 function Post() {
   const [skills, setSkills] = useState([]);
   const [currentSkill, setCurrentSkill] = useState('');
   const [selectedEducation, setSelectedEducation] = useState([]);
   const [isEducationDropdownOpen, setIsEducationDropdownOpen] = useState(false);
+  const [showTokenTooltip, setShowTokenTooltip] = useState(false); // <-- Add this line
   const dropdownRef = useRef(null);
 
   const educationOptions = [
@@ -72,6 +74,32 @@ function Post() {
         </p>
 
         <div className="space-y-6">
+
+        <div>
+            <label className="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+              Token
+              <span
+                className="relative group"
+                tabIndex={0}
+                onClick={() => setShowTokenTooltip((prev) => !prev)}
+                onBlur={() => setShowTokenTooltip(false)}
+                onMouseEnter={() => setShowTokenTooltip(true)}
+                onMouseLeave={() => setShowTokenTooltip(false)}
+              >
+                <FiInfo className="h-4 w-4 text-gray-400 cursor-pointer" />
+                <div onMouseEnter={() => setShowTokenTooltip(true)} className={`absolute top-0 left-20 -translate-x-1/2 mt-2 w-64 bg-white text-gray-700 text-sm rounded shadow-lg p-4 z-20 transition-opacity ${showTokenTooltip ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+                  To get your API token, visit <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">https://aistudio.google.com/apikey</a>.<br /><br />
+                  Sign in with your Google account,then click on create api key, then copy your API key from the page and paste it here.
+                </div>
+              </span>
+            </label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#015551] focus:border-[#015551] transition-all"
+              placeholder="Enter your token"
+            />
+          </div>
+
           <div>
             <label className="block text-gray-700 font-medium mb-2">Job Title</label>
             <input
