@@ -21,9 +21,9 @@ const App = () => {
         </Route>
         <Route element={<SecondLayout />}>
           <Route path="/post" element={<Post />} />
-          <Route path="/apply" element={<Apply />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/links" element={<Links />} />
+          <Route path="/apply/:share" element={<Apply />} />
+          <Route path="/dashboard/:dashboard" element={<Dashboard />} />
+          <Route path="/links/:share" element={<Links />} />
         </Route>
       </Routes>
     </Router>

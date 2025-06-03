@@ -22,7 +22,7 @@ function Home() {
             AI-Powered Recruitment Solution
           </h1>
           <p className="text-lg text-gray-700 mb-6">
-            Streamline your hiring process with our intelligent recruitment platform. 
+            Streamline your hiring process with our intelligent recruitment platform.
             Post jobs, screen candidates, and find the perfect match with AI assistance.
           </p>
           <div className="flex flex-wrap gap-4">
@@ -42,9 +42,9 @@ function Home() {
         </div>
         <div className="md:w-1/2">
           <div className="px-0 lg:px-8 xl:px-12">
-            <img 
-              src={heroImage} 
-              alt="RecruitAI Platform" 
+            <img
+              src={heroImage}
+              alt="RecruitAI Platform"
               className="w-full h-auto rounded-lg shadow-lg"
             />
           </div>

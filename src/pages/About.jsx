@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import AOS from 'aos'
-import 'aos/dist/aos.css'
-import aboutImage from '../assets/about.png' // Import the about image
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import aboutImage from '../assets/about.png';
 
 function About() {
   useEffect(() => {
@@ -18,19 +18,13 @@ function About() {
       {/* Hero Section */}
       <div className="flex flex-col md:flex-row items-center justify-between py-12 gap-8" data-aos="fade-up">
         <div className="md:w-1/2">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#015551] mb-4">
-            About RecruitAi
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-[#015551] mb-4">About RecruitAi</h1>
           <p className="text-lg text-gray-700 mb-6">
             We're revolutionizing the recruitment industry with AI-powered solutions that connect the right talent with the right opportunities.
           </p>
         </div>
         <div className="md:w-1/2 lg:px-8 xl:px-12">
-          <img 
-            src={aboutImage} 
-            alt="About RecruitAi" 
-            className="w-full h-auto rounded-lg shadow-lg"
-          />
+          <img src={aboutImage} alt="About RecruitAi" className="w-full h-auto rounded-lg shadow-lg" />
         </div>
       </div>
 
@@ -48,9 +42,7 @@ function About() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-[#015551] mb-3">Efficiency</h3>
-            <p className="text-gray-700">
-              Streamlining the recruitment process to save time and resources for organizations of all sizes.
-            </p>
+            <p className="text-gray-700">Streamlining the recruitment process to save time and resources for organizations of all sizes.</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all text-center" data-aos="fade-up" data-aos-delay="200">
             <div className="bg-[#015551]/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mb-4 mx-auto">
@@ -59,9 +51,7 @@ function About() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-[#015551] mb-3">Accuracy</h3>
-            <p className="text-gray-700">
-              Using AI to match candidates with positions based on skills, experience, and cultural fit.
-            </p>
+            <p className="text-gray-700">Using AI to match candidates with positions based on skills, experience, and cultural fit.</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all text-center" data-aos="fade-up" data-aos-delay="300">
             <div className="bg-[#015551]/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mb-4 mx-auto">
@@ -70,14 +60,12 @@ function About() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-[#015551] mb-3">Inclusivity</h3>
-            <p className="text-gray-700">
-              Reducing bias in hiring by focusing on qualifications rather than demographic factors.
-            </p>
+            <p className="text-gray-700">Reducing bias in hiring by focusing on qualifications rather than demographic factors.</p>
           </div>
         </div>
       </div>
 
-      {/* Our Story Section - UPDATED */}
+      {/* Our Story Section */}
       <div className="py-12" data-aos="fade-up">
         <h2 className="text-3xl font-bold text-[#015551] mb-8 text-center">Our Story</h2>
         <div className="bg-white p-8 rounded-lg shadow-md">
@@ -100,22 +88,16 @@ function About() {
           Experience the power of AI-driven recruitment and transform how you find talent.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link
-            to="/post"
-            className="px-8 py-3 bg-[#015551] text-white rounded-lg hover:bg-[#01403d] transition-all font-medium inline-block"
-          >
+          <Link to="/post" className="px-8 py-3 bg-[#015551] text-white rounded-lg hover:bg-[#01403d] transition-all font-medium inline-block">
             Post a Job
           </Link>
-          <Link
-            to="/#contact"
-            className="px-8 py-3 border border-[#015551] text-[#015551] rounded-lg hover:bg-gray-100 transition-all font-medium inline-block"
-          >
+          <Link to="/#contact" className="px-8 py-3 border border-[#015551] text-[#015551] rounded-lg hover:bg-gray-100 transition-all font-medium inline-block">
             Contact Us
           </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default About
+export default About;

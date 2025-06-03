@@ -1,17 +1,26 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 
-function useAxios(config = {}) {
+/**
+ * Custom hook for making Axios HTTP requests.
+ * Manages data, error, and loading states.
+ */
+function useAxios(initialConfig = {}) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Sends an HTTP request using Axios.
+   * Allows overriding initial configuration.
+   */
   const sendRequest = useCallback(
     async (overrideConfig = {}) => {
       setLoading(true);
       setError(null);
+      setData(null); 
       try {
-        const response = await axios({ ...config, ...overrideConfig });
+        const response = await axios({ ...initialConfig, ...overrideConfig });
         setData(response.data);
         return response.data;
       } catch (err) {
@@ -21,7 +30,7 @@ function useAxios(config = {}) {
         setLoading(false);
       }
     },
-    [config]
+    [initialConfig] 
   );
 
   return { data, error, loading, sendRequest };
