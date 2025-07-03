@@ -15,7 +15,7 @@ function Post() {
   const [city, setCity] = useState('');
   const [minExperience, setMinExperience] = useState(0);
   const [showTokenTooltip, setShowTokenTooltip] = useState(false);
-  
+
   // API integration hook for creating a post
   const { loading, error, createPost } = useCreatePost();
 
@@ -36,7 +36,7 @@ function Post() {
   // Handles form submission to create a new post
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Prepare post data for API submission
     const postData = {
       token,
@@ -46,7 +46,7 @@ function Post() {
       city,
       min_experience: minExperience
     };
-    
+
     try {
       const response = await createPost(postData);
       if (response) {
@@ -70,7 +70,7 @@ function Post() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="text-gray-700 font-medium mb-2 flex items-center gap-2">
-              Token
+              API key
               <span
                 className="relative group"
                 tabIndex={0}
@@ -179,7 +179,7 @@ function Post() {
           >
             {loading ? 'Creating...' : 'Create Job Post'}
           </button>
-          
+
           {error && (
             <p className="text-red-500 text-sm mt-2">
               Error: {error.message || 'Failed to create job post'}
