@@ -122,6 +122,9 @@ function Apply() {
         ) : postData ? (
           <div className="bg-[#C1CFA1] p-6 rounded-lg mb-8">
             <h1 className="text-3xl font-bold text-[#015551] mb-4">{postData.title}</h1>
+            {postData.description && (
+              <p className="text-gray-700 mb-4">{postData.description}</p>
+            )}
             <div className="flex flex-wrap gap-2 mb-3">
               {postData.skills && JSON.parse(postData.skills).map((skill, index) => (
                 <div key={index} className="bg-[#015551] px-2 py-1 rounded-full text-white text-sm">{skill}</div>
