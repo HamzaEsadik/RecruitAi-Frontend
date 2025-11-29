@@ -36,7 +36,6 @@ An intelligent recruitment platform built with React and powered by AI to stream
 ## 👨‍💻 Author
 
 **Hamza Esadik**
-
 - GitHub: [@HamzaEsadik](https://github.com/HamzaEsadik)
 
 ---
