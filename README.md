@@ -1,12 +1,44 @@
-# React + Vite
+# 🎯 RecruitAI - Smart Recruitment Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An intelligent recruitment platform built with React and powered by AI to streamline the hiring process. RecruitAI helps companies post job openings, manage applications, and identify top candidates using AI-driven skill matching and scoring.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **🤖 AI-Powered Candidate Scoring**: Automatic evaluation of applicants based on skills, experience, and job requirements
+- **📊 Smart Dashboard**: Comprehensive analytics and insights on applicants with real-time filtering and sorting
+- **🎯 Skill Matching**: Advanced skill-matching algorithm to identify the best-fit candidates
+- **📝 Dynamic Job Posting**: Easy job post creation with skill requirements and detailed descriptions
+- **💬 AI Interview Generation**: Generate customized interview questions in multiple languages (English, French, Spanish)
+- **🔍 Advanced Filtering**: Real-time search and filter by name, skills, experience, and AI score
+- **⭐ Candidate Management**: Mark favorites, view resumes, and manage applications efficiently
+- **🔐 Secure Access**: Token-based authentication for dashboard access
+- **📱 Responsive Design**: Mobile-first design that works seamlessly across all devices
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend Framework**: React 19
+- **Build Tool**: Vite 6
+- **Styling**: Tailwind CSS 4
+- **State Management**: Redux
+- **Routing**: React Router DOM 7
+- **HTTP Client**: Axios
+- **Icons**: React Icons
+- **Animations**: AOS (Animate On Scroll)
+
+## 🚀 Performance Optimizations
+
+- ⚡ **Lazy Loading**: Route-based code splitting for faster initial load
+- 🧠 **Memoization**: React.memo, useMemo, and useCallback for optimized re-renders
+- 🎨 **Component Architecture**: Modular, reusable component structure
+- 🛡️ **Error Boundaries**: Graceful error handling throughout the application
+- 📦 **Optimized Bundling**: Vite's lightning-fast build and HMR
+
+## 👨‍💻 Author
+
+**Hamza Esadik**
+
+- GitHub: [@HamzaEsadik](https://github.com/HamzaEsadik)
+
+---
+
+⭐ If you found this project helpful, please give it a star!
