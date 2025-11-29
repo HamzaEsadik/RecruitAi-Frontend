@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { useGetPostByShare } from '../services/postServices';
+import { useGetPostByShare } from '../post/services/postServices';
+import ShareableLink from '../../components/common/ShareableLink/ShareableLink';
 
 // Component to display links after a job post is created
 function Links() {
@@ -8,7 +9,7 @@ function Links() {
   const { share } = useParams(); // Extract the share parameter from URL
   // State variables for post data and loading status
   const [postData, setPostData] = useState(null);
-  const { data, error, loading, getPost } = useGetPostByShare(share);
+  const { data, error, getPost } = useGetPostByShare(share);
   const [fetchAttempted, setFetchAttempted] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // Add a local loading state
   
@@ -42,11 +43,6 @@ function Links() {
       setIsLoading(false);
     }
   }, [data, postData]);
-
-  // Handles copying a link to the clipboard
-  const handleCopyLink = (link) => {
-    navigator.clipboard.writeText(link);
-  };
 
   // Skeleton loading component for a better user experience
   const Skeleton = () => (
@@ -97,57 +93,27 @@ function Links() {
       </p>
       <div className="space-y-8">
         <div>
-          <h2 className="text-xl font-semibold text-[#015551] mb-4">Share this Job</h2>
-          <div className="flex items-center">
-            <input
-              type="text"
-              value={shareLink}
-              readOnly
-              className="w-full px-4 py-2 bg-gray-200 rounded-l-lg focus:ring-2 focus:ring-[#015551] transition-all"
-            />
-            <button
-              onClick={() => handleCopyLink(shareLink)}
-              className="bg-[#015551] text-white px-4 py-2 rounded-r-lg hover:bg-[#01403d] transition-all hover:cursor-pointer"
-            >
-              Copy
-            </button>
-          </div>
+          <ShareableLink
+            url={shareLink}
+            label="Share this Job"
+            showOpenButton
+          />
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-[#015551] mb-4">View Analytics</h2>
-          <div className="flex items-center">
-            <input
-              type="text"
-              value={dashboardLink}
-              readOnly
-              className="w-full px-4 py-2 bg-gray-200 rounded-l-lg focus:ring-2 focus:ring-[#015551] transition-all"
-            />
-            <button
-              onClick={() => handleCopyLink(dashboardLink)}
-              className="bg-[#015551] text-white px-4 py-2 rounded-r-lg hover:bg-[#01403d] transition-all hover:cursor-pointer"
-            >
-              Copy
-            </button>
-          </div>
+          <ShareableLink
+            url={dashboardLink}
+            label="View Analytics"
+            showOpenButton
+          />
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-[#015551] mb-4">Access Token</h2>
-          <div className="flex items-center">
-            <input
-              type="text"
-              value={accessToken}
-              readOnly
-              className="w-full px-4 py-2 bg-gray-200 rounded-l-lg focus:ring-2 focus:ring-[#015551] transition-all"
-            />
-            <button
-              onClick={() => handleCopyLink(accessToken)}
-              className="bg-[#015551] text-white px-4 py-2 rounded-r-lg hover:bg-[#01403d] transition-all hover:cursor-pointer"
-            >
-              Copy
-            </button>
-          </div>
+          <ShareableLink
+            url={accessToken}
+            label="Access Token"
+            showOpenButton={false}
+          />
         </div>
       </div>
     </div>

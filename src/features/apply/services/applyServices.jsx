@@ -1,4 +1,4 @@
-import useAxios from '../hooks/useAxios';
+import useAxios from '../../../hooks/useAxios';
 
 const API_URL = import.meta.env.VITE_API_URL;
 

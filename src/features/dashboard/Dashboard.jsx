@@ -1,11 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetDashboard, useDeletePost } from '../services/postServices';
-import { useDeleteApplication, useMarkAsFavourite, useRequestInterview } from '../services/applyServices';
-import Modal from '../components/Modal';
-import LanguageSelectionModal from '../components/LanguageSelectionModal';
-import InterviewResponseModal from '../components/InterviewResponseModal';
-import useDisableScroll from '../hooks/useDisableScroll';
+import { useGetDashboard, useDeletePost } from '../post/services/postServices';
+import { useDeleteApplication, useMarkAsFavourite, useRequestInterview } from '../apply/services/applyServices';
+import LanguageSelectionModal from '../../components/modals/LanguageSelectionModal';
+import InterviewResponseModal from '../../components/modals/InterviewResponseModal';
+import ConfirmationDialog from '../../components/common/ConfirmationDialog/ConfirmationDialog';
+import StatsCard from './components/StatsCard';
+import Badge from '../../components/common/Badge/Badge';
+import useDisableScroll from '../../hooks/useDisableScroll';
 
 // Dashboard component to display and manage job applicants
 function Dashboard() {
@@ -15,9 +17,7 @@ function Dashboard() {
   const [searchName, setSearchName] = useState('');
   const [searchSkills, setSearchSkills] = useState('');
   const [minExperience, setMinExperience] = useState(0);
-  const [filteredApplicants, setFilteredApplicants] = useState([]);
   const [fetchAttempted, setFetchAttempted] = useState(false);
-  const dropdownRef = useRef(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedApplicantId, setSelectedApplicantId] = useState(null);
   const { markAsFavourite } = useMarkAsFavourite();
@@ -47,88 +47,62 @@ function Dashboard() {
   const { error, loading, getDashboard } = useGetDashboard(dashboard, accessToken);
   const { deleteApplication } = useDeleteApplication();
 
-  // Effect to apply filters and sorting to applicants list
-  useEffect(() => {
-    if (data?.data?.applies) {
-      let filtered = [...data.data.applies];
+  // Memoize filtered applicants for performance
+  const filteredApplicants = useMemo(() => {
+    if (!data?.data?.applies) {
+      return [];
+    }
 
-      // Filter by name
-      if (searchName) {
-        filtered = filtered.filter(applicant =>
-          applicant.name.toLowerCase().includes(searchName.toLowerCase())
-        );
-      }
+    let filtered = [...data.data.applies];
 
-      // Filter by skills
-      if (searchSkills) {
-        const skills = searchSkills.toLowerCase().split(',').map(s => s.trim());
-        filtered = filtered.filter(applicant =>
-          applicant.detail.skills.some(skill =>
-            skills.some(s => skill.toLowerCase().includes(s))
-          )
-        );
-      }
+    // Filter by name
+    if (searchName) {
+      filtered = filtered.filter(applicant =>
+        applicant.name.toLowerCase().includes(searchName.toLowerCase())
+      );
+    }
 
-      // Filter by experience
-      if (minExperience > 0) {
-        filtered = filtered.filter(applicant =>
-          applicant.detail.experience >= minExperience
-        );
-      }
+    // Filter by skills
+    if (searchSkills) {
+      const skills = searchSkills.toLowerCase().split(',').map(s => s.trim());
+      filtered = filtered.filter(applicant =>
+        applicant.detail.skills.some(skill =>
+          skills.some(s => skill.toLowerCase().includes(s))
+        )
+      );
+    }
 
-      // Sorting
-      if (sortConfig.key) {
-        filtered.sort((a, b) => {
-          let aValue, bValue;
-          if (sortConfig.key === 'skills_match') {
-            aValue = a.detail.skills_match;
-            bValue = b.detail.skills_match;
-          } else if (sortConfig.key === 'ai_score') {
-            aValue = a.detail.ai_score;
-            bValue = b.detail.ai_score;
-          } else if (sortConfig.key === 'experience') {
-            aValue = a.detail.experience;
-            bValue = b.detail.experience;
-          } else {
-            return 0;
-          }
-          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+    // Filter by experience
+    if (minExperience > 0) {
+      filtered = filtered.filter(applicant =>
+        applicant.detail.experience >= minExperience
+      );
+    }
+
+    // Sorting
+    if (sortConfig.key) {
+      filtered.sort((a, b) => {
+        let aValue, bValue;
+        if (sortConfig.key === 'skills_match') {
+          aValue = a.detail.skills_match;
+          bValue = b.detail.skills_match;
+        } else if (sortConfig.key === 'ai_score') {
+          aValue = a.detail.ai_score;
+          bValue = b.detail.ai_score;
+        } else if (sortConfig.key === 'experience') {
+          aValue = a.detail.experience;
+          bValue = b.detail.experience;
+        } else {
           return 0;
-        });
-      }
-
-      setFilteredApplicants(filtered);
+        }
+        if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
     }
+
+    return filtered;
   }, [data, searchName, searchSkills, minExperience, sortConfig]);
-
-  // Options for education level filter (currently not used in UI)
-  const educationOptions = [
-    { value: 'no_education', label: 'No Formal Education' },
-    { value: 'primary', label: 'Primary Education' },
-    { value: 'secondary', label: 'Secondary Education' },
-    { value: 'high_school', label: 'High School Diploma' },
-    { value: 'vocational', label: 'Vocational Training' },
-    { value: 'associate', label: 'Associate Degree' },
-    { value: 'bachelor', label: "Bachelor's Degree" },
-    { value: 'master', label: "Master's Degree" },
-    { value: 'professional', label: 'Professional Degree' },
-    { value: 'phd', label: 'Doctorate (PhD)' },
-    { value: 'postdoc', label: 'Postdoctoral Studies' }
-  ];
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsEducationDropdownOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   // Determines the color for the AI score badge based on the score
   const getScoreColor = (score) => {
@@ -139,13 +113,13 @@ function Dashboard() {
   };
 
   // Handles changes to the access token input
-  const handleTokenChange = (e) => {
+  const handleTokenChange = useCallback((e) => {
     setAccessToken(e.target.value);
     setData(null);
-  };
+  }, []);
 
   // Modify the button click handler
-  const handleLoadDashboard = async () => {
+  const handleLoadDashboard = useCallback(async () => {
     if (dashboard && accessToken && !fetchAttempted) {
       setFetchAttempted(true);
       const result = await getDashboard();
@@ -155,7 +129,7 @@ function Dashboard() {
         setFetchAttempted(false);
       }
     }
-  };
+  }, [dashboard, accessToken, fetchAttempted, getDashboard]);
 
   // Add a reset function when token changes
   useEffect(() => {
@@ -163,13 +137,13 @@ function Dashboard() {
   }, [accessToken]);
 
   // Opens the delete applicant confirmation modal
-  const handleDeleteClick = (applyId) => {
+  const handleDeleteClick = useCallback((applyId) => {
     setSelectedApplicantId(applyId);
     setIsDeleteModalOpen(true);
-  };
+  }, []);
 
   // Confirms and executes applicant deletion
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = useCallback(async () => {
     if (selectedApplicantId) {
       await deleteApplication(selectedApplicantId);
       const result = await getDashboard(); // Refresh the dashboard data after deletion
@@ -178,15 +152,15 @@ function Dashboard() {
       }
     }
     setIsDeleteModalOpen(false);
-  };
+  }, [selectedApplicantId, deleteApplication, getDashboard]);
 
   // Cancels applicant deletion
-  const handleDeleteCancel = () => {
+  const handleDeleteCancel = useCallback(() => {
     setIsDeleteModalOpen(false);
-  };
+  }, []);
 
   // Marks or unmarks an applicant as a favorite
-  const handleMarkAsFavourite = async (applyId) => {
+  const handleMarkAsFavourite = useCallback(async (applyId) => {
     await markAsFavourite(applyId);
     // Update the favorite status locally without refreshing
     setData(prevData => ({
@@ -200,20 +174,20 @@ function Dashboard() {
         )
       }
     }));
-  };
+  }, [markAsFavourite]);
 
   // Handles clicking the interview button for an applicant
-  const handleInterviewClick = (applicant) => {
+  const handleInterviewClick = useCallback((applicant) => {
     setSelectedApplicantForInterview(applicant);
     if (applicant.detail.interview && Object.keys(applicant.detail.interview).length > 0) {
       setIsResponseModalOpen(true); // Show interview questions modal
     } else {
       setIsLanguageModalOpen(true); // Show language selection modal
     }
-  };
+  }, []);
 
   // REWRITE: After successful generation in LanguageSelectionModal, refresh then open InterviewResponseModal
-  const handleGenerateInterview = async (languageCode) => {
+  const handleGenerateInterview = useCallback(async (languageCode) => {
     if (selectedApplicantForInterview && languageCode) {
       setIsGeneratingInterview(true);
       await requestInterview(selectedApplicantForInterview.id, languageCode);
@@ -233,33 +207,33 @@ function Dashboard() {
       }
       setIsResponseModalOpen(true); // Open the interview questions modal after data is refreshed
     }
-  };
+  }, [selectedApplicantForInterview, requestInterview, getDashboard]);
 
   // Closes the language selection modal
-  const handleCloseLanguageModal = () => {
+  const handleCloseLanguageModal = useCallback(() => {
     setIsLanguageModalOpen(false);
     setSelectedApplicantForInterview(null);
-  };
+  }, []);
 
   // Closes the interview response modal
-  const handleCloseResponseModal = () => {
+  const handleCloseResponseModal = useCallback(() => {
     setIsResponseModalOpen(false);
     setSelectedApplicantForInterview(null);
-  };
+  }, []);
 
   // Handles regenerating an interview, closes response modal and opens language modal
-  const handleRegenerateInterview = () => {
+  const handleRegenerateInterview = useCallback(() => {
     setIsResponseModalOpen(false); // Close the interview questions modal
     setIsLanguageModalOpen(true); // Open the language selection modal
-  };
+  }, []);
 
   // Callback for when interview generation loading finishes (legacy, might be removable)
-  const handleLoadingFinish = () => {
+  const handleLoadingFinish = useCallback(() => {
     setIsResponseModalOpen(true); // Open the interview questions modal after loading finishes
-  };
+  }, []);
 
   // Confirms and executes post deletion
-  const handleDeletePostConfirm = async () => {
+  const handleDeletePostConfirm = useCallback(async () => {
     if (dashboard && accessToken) {
       const result = await deletePost(dashboard, accessToken);
       if (result) {
@@ -268,31 +242,25 @@ function Dashboard() {
       }
     }
     setIsDeletePostModalOpen(false); // Close the modal after deletion
-  };
+  }, [dashboard, accessToken, deletePost]);
 
   // Cancels post deletion
-  const handleDeletePostCancel = () => {
+  const handleDeletePostCancel = useCallback(() => {
     setIsDeletePostModalOpen(false); // Close the modal without deleting
-  };
+  }, []);
 
   // Refresh handler
-  const handleRefreshDashboard = async () => {
+  const handleRefreshDashboard = useCallback(async () => {
     if (dashboard && accessToken) {
       const result = await getDashboard();
       if (result) {
         setData(result);
       }
     }
-  };
-
-  // Placeholder for filter button click (filtering is reactive via useEffect)
-  const handleFilter = () => {
-    // Filtering is handled reactively in useEffect, so this is a no-op.
-    // You may add custom sort/filter logic here if needed.
-  };
+  }, [dashboard, accessToken, getDashboard]);
 
   // Handles sorting the applicants table by a specific key
-  const handleSort = (key) => {
+  const handleSort = useCallback((key) => {
     setSortConfig(prev => {
       if (prev.key === key) {
         // Toggle direction
@@ -308,7 +276,7 @@ function Dashboard() {
         };
       }
     });
-  };
+  }, []);
 
   // Helper to show sort arrow
   const renderSortArrow = (key) => {
@@ -380,12 +348,12 @@ function Dashboard() {
             </div>
             <div className="flex flex-wrap gap-2 mb-3 mt-2">
               {data.data.skills && JSON.parse(data.data.skills).map((skill, index) => (
-                <div
+                <Badge
                   key={index}
-                  className="bg-[#015551] px-2 py-1 rounded-full text-white text-xs sm:text-sm"
-                >
-                  {skill}
-                </div>
+                  text={skill}
+                  color="#015551"
+                  className="text-white text-xs sm:text-sm"
+                />
               ))}
             </div>
             <span className="block text-gray-600 text-xs sm:text-sm text-center sm:text-left">
@@ -396,34 +364,41 @@ function Dashboard() {
 
           {/* Metrics Display Section */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 overflow-x-auto">
-            <div className="bg-white p-6 rounded-lg shadow min-w-[200px]">
-              <h3 className="text-gray-500 text-sm font-medium">Total Applicants</h3>
-              <p className="text-3xl font-bold text-[#015551]">{data.data.applies.length}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow min-w-[200px]">
-              <h3 className="text-gray-500 text-sm font-medium">&gt; 7.5 AI Score</h3>
-              <p className="text-3xl font-bold text-[#015551]">
-                {data.data.applies.filter(app => app.detail.ai_score > 7.5).length}
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow min-w-[200px]">
-              <h3 className="text-gray-500 text-sm font-medium">&gt; 60% Skill Match</h3>
-              <p className="text-3xl font-bold text-[#015551]">
-                {data.data.applies.filter(app => app.detail.skills_match > 0.6).length}
-              </p>
-            </div>
+            <StatsCard
+              label="Total Applicants"
+              value={data.data.applies.length}
+              icon="users"
+              color="primary"
+              className="min-w-[200px]"
+            />
+            <StatsCard
+              label="> 7.5 AI Score"
+              value={data.data.applies.filter(app => app.detail.ai_score > 7.5).length}
+              icon="award"
+              color="success"
+              className="min-w-[200px]"
+            />
+            <StatsCard
+              label="> 60% Skill Match"
+              value={data.data.applies.filter(app => app.detail.skills_match > 0.6).length}
+              icon="target"
+              color="info"
+              className="min-w-[200px]"
+            />
           </div>
         </>
       )}
 
       {/* Delete Post Confirmation Modal */}
-      <Modal
+      <ConfirmationDialog
         isOpen={isDeletePostModalOpen}
         onClose={handleDeletePostCancel}
         onConfirm={handleDeletePostConfirm}
-      >
-        <p>Are you sure you want to delete this job post? This action cannot be undone.</p>
-      </Modal>
+        title="Delete Job Post"
+        message="Are you sure you want to delete this job post? This action cannot be undone."
+        confirmText="Delete"
+        type="danger"
+      />
 
       {data && data.data.applies && (
         <>
@@ -451,7 +426,7 @@ function Dashboard() {
                 />
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-6 mb-4">
+            <div className="flex flex-col sm:flex-row gap-6">
               <div className="flex-1">
                 <label className="block text-gray-700 font-medium mb-2">Min Experience</label>
                 <input
@@ -464,12 +439,6 @@ function Dashboard() {
                 />
               </div>
             </div>
-            <button
-              onClick={handleFilter}
-              className="bg-[#015551] text-white px-6 py-2 rounded-lg hover:bg-[#01403d] transition-all hover:cursor-pointer"
-            >
-              Sort & Filter
-            </button>
           </div>
 
           {/* Table Section */}
@@ -596,14 +565,16 @@ function Dashboard() {
         interview={selectedApplicantForInterview?.detail?.interview || { questions: [] }}
       />
 
-      {/* Delete Modal */}
-      <Modal
+      {/* Delete Applicant Modal */}
+      <ConfirmationDialog
         isOpen={isDeleteModalOpen}
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
-      >
-        <p>Are you sure you want to delete this application?</p>
-      </Modal>
+        title="Delete Application"
+        message="Are you sure you want to delete this application? This action cannot be undone."
+        confirmText="Delete"
+        type="danger"
+      />
     </div>
   );
 }

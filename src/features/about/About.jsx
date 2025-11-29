@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import aboutImage from '../assets/about.png';
+import aboutImage from '../../assets/about.png';
 
 function About() {
   useEffect(() => {

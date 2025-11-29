@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import heroImage from '../assets/hero.png'
+import heroImage from '../../assets/hero.png'
 
 function Home() {
   useEffect(() => {
@@ -52,7 +52,7 @@ function Home() {
       </div>
 
       {/* Why Choose Us Section */}
-      <div className="py-8 md:py-12 bg-[#f8f9fa] rounded-lg my-6 md:my-8 p-4 md:p-8" data-aos="fade-up">
+      <div className="py-8 md:py-12 my-6 md:my-8" data-aos="fade-up">
         <h2 className="text-3xl font-bold text-[#015551] mb-8 text-center">Why Choose RecruitAi?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all" data-aos="fade-up" data-aos-delay="100">
@@ -176,7 +176,7 @@ function Home() {
       </div>
 
       {/* How It Works Section - NEW SECTION */}
-      <div className="py-8 md:py-12 bg-[#f8f9fa] rounded-lg my-6 md:my-8 p-4 md:p-8" data-aos="fade-up">
+      <div className="py-8 md:py-12 my-6 md:my-8" data-aos="fade-up">
         <h2 className="text-3xl font-bold text-[#015551] mb-8 text-center">How It Works</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           <div className="bg-white p-4 md:p-6 rounded-lg shadow-md hover:shadow-lg transition-all" data-aos="fade-up" data-aos-delay="100">
